@@ -1,0 +1,12 @@
+{
+  "name": "watch-orgs",
+  "version": "0.0.1",
+  "description": "Watch an instance of GHE for new Organizations and discover details",
+  "main": "index.js",
+  "repository": "https://github.com/tcbyrd/watch-orgs",
+  "author": "tcbyrd",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.2.0"
+  }
+}
