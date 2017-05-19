@@ -7,28 +7,41 @@ const csv = require('csvtojson')
 
 app.use(logger())
 
-app.use(route.get('/', listen))
+app.use(route.get('/', list))
 
+const opts = {
+              withCredentials: true,
+              auth: {
+                username: '<username>',
+                password: '<password>' //TODO: REMOVE THIS BEFORE YOU COMMIT
+              },
+              responseType: 'json'
+            }
 
-async function listen () {
-  let url = 'https://octodemo.com/stafftools/reports/all_organizations.csv'
+async function list () {
   try {
-    let csvStr = await axios.get(url, {
-        withCredentials: true,
-        auth: {
-          username: '<username>',
-          password: '<password>' //TODO: REMOVE THIS BEFORE YOU COMMIT
-        },
-        responseType: 'json'
-    })
+    let csvStr = await getCsv('all_users.csv')
     let jsonData = []
     let result = await convertCsv(csvStr.data, jsonData)
     this.type = 'text/json; charset=utf-8'
     this.body = result
-
   } catch (error) {
     console.log(error)
     this.body = error
+  }
+}
+
+async function getCsv (report) {
+  let url = 'https://octodemo.com/stafftools/reports/' + report
+  let csvData = await axios.get(url, opts)
+  console.log('CSV Data: ', csvData.data);
+  if (csvData.data === '') {
+    console.log('sleeping')
+    sleep(3000)
+    csvData = await axios.get(url, opts)
+    return csvData
+  } else {
+    return csvData
   }
 }
 
@@ -39,9 +52,13 @@ async function convertCsv (csvData, jsonData) {
       // jsonData.push(jsonObj)
     })
     .on('done', () => {
-      // return jsonData
+      // return this.jsonData
     })
   return results
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, mss))
 }
 
 app.listen(3000, () => {
