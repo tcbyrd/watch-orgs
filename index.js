@@ -58,7 +58,7 @@ async function convertCsv (csvData, jsonData) {
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, mss))
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 app.listen(3000, () => {
